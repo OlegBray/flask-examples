@@ -1,28 +1,40 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_TAG = 'latest'
+    }
+
     stages {
+        stage('Docker Hub Login') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS' )]) {
+                    script {
+                        IMAGE_NAME = "${DOCKER_USER}/flask-example"
+                    }
+                    
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    '''
+                }
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t flask-example .'
+                sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
             }
         }
 
-        stage('Run in Docker Container') {
+        stage('Push to DockerHub') {
             steps {
-                sh 'docker run --rm flask-example'
+                sh 'docker push $IMAGE_NAME:$IMAGE_TAG'
             }
         }
 
-        stage('Test') {
+        stage('Logout from DockerHub') {
             steps {
-                echo 'Running tests...'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                echo 'Deploying...'
+                sh 'docker logout'
             }
         }
     }
