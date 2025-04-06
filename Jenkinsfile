@@ -1,9 +1,11 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage('Build Dockerfile') {
             steps {
-                echo "build"
+                script {
+			dockerImage = docker.build("flask-example")
+		}
             }
         }
         stage('Test') {
