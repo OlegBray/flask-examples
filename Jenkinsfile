@@ -10,7 +10,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS' )]) {
                     script {
-                        IMAGE_NAME = "${DOCKER_USER}/flask-example"
+                        env.IMAGE_NAME = "${DOCKER_USER}/flask-example"
                     }
                     
                     sh '''
