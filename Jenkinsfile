@@ -12,7 +12,7 @@ pipeline {
                 }
             }
             steps {
-                docker ps
+                sh 'docker ps'
             }
         }
         stage('Test') {
