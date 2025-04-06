@@ -1,29 +1,30 @@
 pipeline {
     agent any
+
     stages {
-        stage('Build Dockerfile') {
-                // script {
-			    //     dockerImage = docker.build("flask-example")
-		        // }
-            agent {
-                docker {
-                    image 'flask-example'
-                    reuseNode true
-                }
-            }
+        stage('Build Docker Image') {
             steps {
-                sh 'docker ps'
+                sh 'docker build -t flask-example .'
             }
         }
+
+        stage('Run in Docker Container') {
+            steps {
+                sh 'docker run --rm flask-example'
+            }
+        }
+
         stage('Test') {
             steps {
-                echo "test"
+                echo 'Running tests...'
             }
         }
+
         stage('Deploy') {
             steps {
-                echo "deploy"
+                echo 'Deploying...'
             }
         }
     }
 }
+
