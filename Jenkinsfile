@@ -12,7 +12,7 @@ pipeline {
                 }
             }
             steps {
-                echo "build"
+                docker ps
             }
         }
         stage('Test') {
