@@ -3,9 +3,15 @@ pipeline {
     stages {
         stage('Build Dockerfile') {
             steps {
-                script {
-			dockerImage = docker.build("flask-example")
-		}
+                // script {
+			    //     dockerImage = docker.build("flask-example")
+		        // }
+                agent {
+                    docker {
+                        image 'flask-example'
+                        reuseNode true
+                    }
+                }
             }
         }
         stage('Test') {
